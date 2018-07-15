@@ -24,7 +24,7 @@ public class BiHolder<T, U> {
     }
 
     /**
-     * Rerturns T
+     * Returns T
      * @return T
      */
     public T getT() {
