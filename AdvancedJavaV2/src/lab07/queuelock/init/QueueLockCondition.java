@@ -1,4 +1,4 @@
-package lab07.init;
+ package lab07.queuelock.init;
 
 @SuppressWarnings("unused")
 public class QueueLockCondition implements SynchronizedQueue {
@@ -12,14 +12,35 @@ public class QueueLockCondition implements SynchronizedQueue {
 
 	@Override
 	public synchronized void put(Object o) throws InterruptedException {
-		// Implement this using read write locks
-
+		// Refactor this method
+		while (this.curSize == this.maxSize) {
+			this.wait();
+		}
+		
+		if (this.first == null) {
+			this.first = (this.last = new Element(o));
+		} 
+		else {
+			this.last = (this.last.next = new Element(o));
+		}
+		
+		this.curSize++;
+		this.notifyAll();
 	}
 
 	@Override
 	public synchronized Object get() throws InterruptedException {
-		// Implement this using read write locks
-		return null;
+		// Refactor this method
+		while (this.curSize == 0) {
+			this.wait();
+		}
+		
+		Object o = this.first.value;
+		this.first = this.first.next;
+		this.curSize--;
+		this.notifyAll();
+		
+		return o;
 	}
 	
 	private static class Element {

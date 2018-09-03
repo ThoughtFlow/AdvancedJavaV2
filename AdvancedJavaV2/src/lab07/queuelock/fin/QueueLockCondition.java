@@ -1,4 +1,4 @@
-package lab07.fin;
+package lab07.queuelock.fin;
 
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReadWriteLock;
@@ -9,7 +9,7 @@ public class QueueLockCondition implements SynchronizedQueue {
 	private Element first, last;
 	private int curSize, maxSize;
 	private ReadWriteLock lock = new ReentrantReadWriteLock();
-	private Condition condition = lock.writeLock().newCondition();
+	private Condition condition = lock.writeLock().newCondition(); // This is created once only.
 
 	public QueueLockCondition(int maxSize) {
 		this.maxSize = maxSize;
@@ -34,6 +34,7 @@ public class QueueLockCondition implements SynchronizedQueue {
 			condition.signalAll();
 		} 
 		finally {
+			// Make sure the unlock is in a finally block.
 			lock.writeLock().unlock();
 		}
 	}
@@ -56,6 +57,7 @@ public class QueueLockCondition implements SynchronizedQueue {
 			return o;
 		} 
 		finally {
+			// Make sure the unlock is in a finally block.
 			lock.writeLock().unlock();
 		}
 	}

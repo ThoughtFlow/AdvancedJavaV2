@@ -1,4 +1,4 @@
-package lab07.fin;
+package lab07.queuelock.init;
 
 public interface SynchronizedQueue {
 	

@@ -8,18 +8,18 @@ import java.util.stream.IntStream;
 @SuppressWarnings("serial")
 class DrawPanel extends JPanel {
 
-    private final int bacteriaSize;
+    private final int cellSize;
     private final int baseOffset;
 
     private boolean[][] generation;
 
 
-    public DrawPanel(boolean[][] generation, int bacteriaSize, int baseOffset)
+    public DrawPanel(boolean[][] generation, int cellSize, int baseOffset)
     {
         this.generation = generation;
-        this.bacteriaSize = bacteriaSize;
+        this.cellSize = cellSize;
         this.baseOffset = baseOffset;
-        setSize(generation.length * bacteriaSize, generation.length * bacteriaSize);
+        setSize(generation.length * cellSize, generation.length * cellSize);
     }
 
     @Override
@@ -38,11 +38,11 @@ class DrawPanel extends JPanel {
     {
         Graphics2D g2d = (Graphics2D) g;
         g2d.setColor(Color.RED);
-        int offset = bacteriaSize - (bacteriaSize - 1) + baseOffset;
+        int offset = cellSize - (cellSize - 1) + baseOffset;
 
         IntStream.range(0, generation.length).
             forEach(y -> IntStream.range(0, generation.length).
-                filter(x -> generation[y][x]).forEach(x -> g2d.drawOval(x * bacteriaSize + offset, y * bacteriaSize + offset, bacteriaSize, bacteriaSize)));
+                filter(x -> generation[y][x]).forEach(x -> g2d.drawOval(x * cellSize + offset, y * cellSize + offset, cellSize, cellSize)));
     }
 }
 

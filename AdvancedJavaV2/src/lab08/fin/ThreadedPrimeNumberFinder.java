@@ -11,9 +11,6 @@ import lab.util.Util;
 
 public class ThreadedPrimeNumberFinder {
 
-	private static final int K_SLICES = 1000;
-	private static final int K = 1000;
-
 	private static class PrimeFinder implements Callable<Integer> {
 
 		private final int startRange;
@@ -36,13 +33,26 @@ public class ThreadedPrimeNumberFinder {
 		}
 	}
 	
-	public static void main(String[] args) throws InterruptedException, ExecutionException {
-		List<PrimeFinder> primeFinders = new ArrayList<>(K_SLICES);
-		ExecutorService pool = Executors.newFixedThreadPool(5);
+	/**
+	 * Multi-threaded prime counter. Splits the range into 1000 number ranges and returns the count.
+	 * 
+	 * @param range The range for which to count primes.
+	 * @return The number of primes found.
+	 * @throws InterruptedException Thrown upon a thread error.
+	 * @throws ExecutionException Thrown upon an error in the callable.
+	 */
+	private static int countPrimes(int range) throws InterruptedException, ExecutionException {
+
+		final int intsPerSlice = 1000;
+		final int slices = range / intsPerSlice;
+
+		final List<PrimeFinder> primeFinders = new ArrayList<>(slices);
+		final ExecutorService pool = Executors.newFixedThreadPool(10);
+
 		int totalPrimesFound = 0;
 
-		for (int index = 0; index < K_SLICES; ++index) {
-			primeFinders.add(new PrimeFinder(index * K, index * K + K - 1));
+		for (int index = 0; index < slices; ++index) {
+			primeFinders.add(new PrimeFinder(index * intsPerSlice, index * intsPerSlice + intsPerSlice - 1));
 		}
 		
 		List<Future<Integer>> futures = pool.invokeAll(primeFinders);
@@ -50,8 +60,17 @@ public class ThreadedPrimeNumberFinder {
 		for (Future<Integer> nextFuture : futures) {
 			totalPrimesFound += nextFuture.get();
 		}
-		
-		System.out.println("Total primes found: " + totalPrimesFound);
+
 		pool.shutdown();
+		
+		return totalPrimesFound;
+	}
+	
+	public static void main(String[] args) {
+		try {
+			System.out.println("Total primes found: " + countPrimes(1000000));
+		} catch (InterruptedException | ExecutionException e) {
+			e.printStackTrace();
+		}
 	}
 }

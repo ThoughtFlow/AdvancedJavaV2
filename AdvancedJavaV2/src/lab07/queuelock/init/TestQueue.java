@@ -1,4 +1,4 @@
-package lab07.fin;
+package lab07.queuelock.init;
 
 import java.util.HashMap;
 import java.util.Map;

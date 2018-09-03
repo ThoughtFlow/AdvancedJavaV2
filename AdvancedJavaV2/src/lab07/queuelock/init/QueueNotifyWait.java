@@ -1,4 +1,4 @@
-package lab07.init;
+package lab07.queuelock.init;
 
 public class QueueNotifyWait implements SynchronizedQueue {
 

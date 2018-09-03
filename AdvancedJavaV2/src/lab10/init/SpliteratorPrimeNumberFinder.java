@@ -8,35 +8,13 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.function.Function;
 
 public class SpliteratorPrimeNumberFinder {
 
 	private static final int LIST_SIZE = 1000000;
 	
-	@SuppressWarnings("unused")
-	private static class PrimeFinder implements Callable<Integer> {
-
-		private final Spliterator<Integer> spliterator;
-
-		public PrimeFinder(Spliterator<Integer> spliterator) {
-			this.spliterator = spliterator;
-		}
-		
-		@Override
-		public Integer call() {
-			
-			// Implement this
-			return 0;
-		}
-	}
-	
-	private static List<Spliterator<Integer>> getSpliterators(List<Integer> integerList) {
-		
-		// Implement this
-		return new ArrayList<Spliterator<Integer>>();
-	}	
-	
-	private static int countPrimes(List<PrimeFinder> primeFinders, ExecutorService pool) throws InterruptedException, ExecutionException {
+	private static int countPrimes(List<Callable<Integer>> primeFinders, ExecutorService pool) throws InterruptedException, ExecutionException {
 
 		List<Future<Integer>> futures = pool.invokeAll(primeFinders);
 		int totalPrimesFound = 0;
@@ -47,7 +25,7 @@ public class SpliteratorPrimeNumberFinder {
 		return totalPrimesFound;
 	}
 	
-	private static int execute() {
+	private static int execute(Function<List<Integer>, List<Spliterator<Integer>>> spliteratorCreator, Function<Spliterator<Integer>, Integer> primeCounter) {
 		int totalPrimesFound;
 		ExecutorService pool = Executors.newFixedThreadPool(4);
 		
@@ -57,9 +35,15 @@ public class SpliteratorPrimeNumberFinder {
 			integerList.add(index);
 		}
 		
-		List<PrimeFinder> primeFinders = new ArrayList<>();
-		for (Spliterator<Integer> next : getSpliterators(integerList)) {
-			primeFinders.add(new PrimeFinder(next));
+		List<Callable<Integer>> primeFinders = new ArrayList<>();
+
+		for (Spliterator<Integer> next : spliteratorCreator.apply(integerList)) {
+			Callable<Integer> callable = () -> primeCounter.apply(next);
+			Callable<Integer> printThread = () -> {
+				System.out.println(Thread.currentThread().getName() + ": " + next.getExactSizeIfKnown());
+				return callable.call();
+			};
+			primeFinders.add(printThread);
 		}
 
 		try {
@@ -76,6 +60,22 @@ public class SpliteratorPrimeNumberFinder {
 	}
 	
 	public static void main(String[] args)  {
-		System.out.println("Total primes found: " + execute());
+
+		// Implement this function that returns a list of Spliterators for Integers 
+		// Input: The list of integers to test for primeness
+		// Output: The list of spliterators of integers representing the range to process	
+		Function<List<Integer>, List<Spliterator<Integer>>> spliteratorCreator = integerList -> {
+
+			return new ArrayList<Spliterator<Integer>>();
+		};
+		
+		// Implement this function that returns the number of primes found in the spliterator data 
+		// Input: The spliterator of integers to process
+	 	// Output: The number of primes found in the spliterator
+		Function<Spliterator<Integer>, Integer> primeCounter = spliterator -> {
+			return 0;
+		};
+		
+		System.out.println("Total primes found: " + execute(spliteratorCreator, primeCounter));
 	}
 }
