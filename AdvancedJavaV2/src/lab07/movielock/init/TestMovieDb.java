@@ -15,6 +15,8 @@ public class TestMovieDb {
 	private static final int NUMBER_OF_MOVIES = 10000;
 
 	private static void test() {
+		
+		System.out.println("Performing tests...");
 		MovieDb movieDb = new ThreadSafeMovieDb();
 		
 		List<Callable<Void>> writers = new ArrayList<>();

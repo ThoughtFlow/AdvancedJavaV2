@@ -21,6 +21,8 @@ public class LinkScraper {
 	private static Map<String, Integer> invoke(List<String> urls) throws InterruptedException, ExecutionException {
 		
 		// Change this to executor service with callback and futures.
+		// 1) Choose the appropriate executor service and mind the pool size
+		// 2) Use submit/invoke, call and future, then shutdown the pool.
 		Map<String, Integer> map = new HashMap<>();
 		for (String nextUrl : urls) {
 		   List<String> hrefs = Util.scrapeHrefs(nextUrl);

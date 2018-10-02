@@ -1,6 +1,6 @@
  package lab07.queuelock.init;
 
-@SuppressWarnings("unused")
+
 public class QueueLockCondition implements SynchronizedQueue {
 
 	private Element first, last;
