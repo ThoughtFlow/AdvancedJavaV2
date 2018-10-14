@@ -103,6 +103,20 @@ public class MessageComposition {
 	}
 	
 	/**
+	 * Prints the list of strings.
+	 * 
+	 * @param stage  The stage of the message to print.
+	 * @param messageToPrint The message to print
+	 */
+	private static void printMessage(String stage, List<String> messageToPrint) {
+		
+		System.out.println(stage);
+		for (String nextLine : messageToPrint) {
+			System.out.println("  " + nextLine);
+		}
+	}
+	
+	/**
 	 * Passes a list of strings through the writing and reading function and prints out message.
 	 * 
 	 * @param writingFunction Function to use to write the list of strings.
@@ -114,12 +128,13 @@ public class MessageComposition {
 		        "  The balance due is $3,256.12.",
 		        "  Thank you for your business.");
 		
+		printMessage("Initial:", rawMessage);
 		List<String> messageToSend = writingFunction.get().apply(rawMessage);
+		
+		printMessage("Encoded:", messageToSend);
 		List<String> receivedMessage = readingFunction.get().apply(messageToSend);
 		
-		for (String nextLine : receivedMessage) {
-			System.out.println(nextLine);
-		}
+		printMessage("Decoded:", receivedMessage);
 	}
 	
 	public static void main(String[] args) throws IOException {
