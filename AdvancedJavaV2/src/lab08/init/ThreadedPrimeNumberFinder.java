@@ -20,6 +20,13 @@ public class ThreadedPrimeNumberFinder {
 		// Change this to executor service with callback and futures.
 		// 1) Choose the appropriate executor service and mind the pool size
 		// 2) Use submit/invoke, call and future, then shutdown the pool.
+		
+		// Objective:
+		// T1 -- countPrimeInRange --
+		// T2 -- countPrimeInRange --\
+		// T3 -- countPrimeInRange ---> sum
+		// T4 -- countPrimeInRange --/
+		// T5 -- countPrimeInRange --
 		int totalPrimesFound = 0;
 		
 		for (int index = 0; index < range; ++index) {

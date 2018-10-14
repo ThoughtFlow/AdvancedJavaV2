@@ -23,11 +23,17 @@ public class LinkScraper {
 		// Change this to executor service with callback and futures.
 		// 1) Choose the appropriate executor service and mind the pool size
 		// 2) Use submit/invoke, call and future, then shutdown the pool.
+		
+		// T1 --> scrapeHref --> catalog --
+		// T2 --> scrapeHref --> catalog --\
+		// T3 --> scrapeHref --> catalog ---> Merge
+		// T4 --> scrapeHref --> catalog --/
+		// TN --> scrapeHref --> catalog --
 		Map<String, Integer> map = new HashMap<>();
-		for (String nextUrl : urls) {
-		   List<String> hrefs = Util.scrapeHrefs(nextUrl);
-		   Map<String, Integer> nextMap = Util.catalog(hrefs);
-		   map = Util.merge(map, nextMap);
+		for (String nextUrl : urls) {                             // Each URL will processed in its own worker thread
+		   List<String> hrefs = Util.scrapeHrefs(nextUrl);        // Step 1 within the worker thread
+		   Map<String, Integer> nextMap = Util.catalog(hrefs);    // Step 2 within the same worker thread
+		   map = Util.merge(map, nextMap);                        // This is done by the master thread once all worker threads have completed
 		}
 		
 		return map;
